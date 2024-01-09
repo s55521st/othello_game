@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Othello Game</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Othello Game</h1>
+    <p>1:YOU(先手)  2:CPU(後手)</p>
+    <table>
+        {% for row in board %}
+            <tr>
+                {% for cell in row %}
+                    <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <p>Current Player: {{ current_player }}</p>
+    
+    {% if warning %}
+        <p>{{ warning }}</p>
+    {% endif %}
+
+    <form action="/move" method="post">
+        <label>Row（行）: </label>
+        <input type="number" name="row" min="0" max="7"><br>
+        <label>Column（列）: </label>
+        <input type="number" name="col" min="0" max="7"><br>
+        <input type="submit" value="put">
+    </form>
+</body>
+</html>
+
