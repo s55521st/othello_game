@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-import funtion
+import function
 
 import sys
 import random
@@ -80,8 +80,8 @@ def make_cpu_move(board):
     
 
     # ゲームのルールに従って石を置く処理
-    if funtion.is_valid_move(board, int(n / 8), int(n % 8), 2):
-        funtion.make_move(board, int(n / 8), int(n % 8), 2)
+    if function.is_valid_move(board, int(n / 8), int(n % 8), 2):
+        function.make_move(board, int(n / 8), int(n % 8), 2)
         retry_num = 0
         current_player = 1 if current_player == 2 else 2
     else:
@@ -103,8 +103,8 @@ def game():
 
         if current_player == 1:
             # ゲームのルールに従って石を置く処理（人間が手を打つ場合）
-            if funtion.is_valid_move(current_board, row, col, 1):
-                funtion.make_move(current_board, row, col, 1)
+            if function.is_valid_move(current_board, row, col, 1):
+                function.make_move(current_board, row, col, 1)
             else:
                 warning = 'そこに石を置けません'
                 return render_template('othello.html', board=current_board, current_player=current_player, warning=warning)
@@ -118,3 +118,5 @@ def game():
 
     return render_template('othello.html', board=current_board, current_player=current_player)
 
+if __name__ == '__main__':
+    app.run()
