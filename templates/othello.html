@@ -17,16 +17,30 @@
             text-align: center;
             font-size: 24px;
         }
+
+        /* ⚫️と⚪️のサイズを大きくするスタイル */
+        .black-stone, .white-stone {
+            font-size: 36px; /* 適切なサイズに調整してください */
+        }
     </style>
 </head>
 <body>
     <h1>Othello Game</h1>
     <p>1 :{{ num_1 }} 　 2 :{{ num_2 }}</p>
+    
     <table>
         {% for row in board %}
             <tr>
                 {% for cell in row %}
-                    <td>{{ cell }}</td>
+                    <td>
+                        {% if cell == 1 %}
+                            <span class="black-stone">⚫️</span>
+                        {% elif cell == 2 %}
+                            <span class="white-stone">⚪️</span>
+                        {% else %}
+                            
+                        {% endif %}
+                    </td>
                 {% endfor %}
             </tr>
         {% endfor %}
@@ -38,15 +52,14 @@
     {% endif %}
 
     <form action="{{ move_action }}" method="post">
-        <label>Row: </label>
+        <label>Row（行）: </label>
         <input type="number" name="row" min="0" max="7"><br>
-        <label>Column: </label>
+        <label>Column（列）: </label>
         <input type="number" name="col" min="0" max="7"><br>
         <input type="submit" value="put">
     </form>
     <form action="/" method="get" style="margin-top: 20px;">
-        <input type="submit" value="model選択画面に戻る">
+        <input type="submit" value="ホームに戻る">
     </form>
 </body>
 </html>
-
