@@ -135,10 +135,10 @@ def index():#指定したパスにアクセスした際に実行される関数
     ]
     return render_template('model_select.html')
 
-
 @app.route('/move')#デコレーター
 def move():#指定したパスにアクセスした際に実行される関数
     return render_template('model_select.html')
+
 
 #モデルの読み込み
 model_1 = Classifier(MLP())
@@ -168,8 +168,13 @@ def game_model1():
 
     if request.method == 'POST':
         current_board = np.array(current_board)
-        row = int(request.form['row'])
-        col = int(request.form['col'])
+        if(request.form['row']=='' or request.form['col'] == ''):
+            return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2)
+        else:
+            row = int(request.form['row'])
+            col = int(request.form['col'])
+
+        
 
         if current_player == 1:
             # ゲームのルールに従って石を置く処理（人間が手を打つ場合）
@@ -200,8 +205,11 @@ def game_model2():
 
     if request.method == 'POST':
         current_board = np.array(current_board)
-        row = int(request.form['row'])
-        col = int(request.form['col'])
+        if(request.form['row']=='' or request.form['col'] == ''):
+            return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2)
+        else:
+            row = int(request.form['row'])
+            col = int(request.form['col'])
 
         if current_player == 1:
             # ゲームのルールに従って石を置く処理（人間が手を打つ場合）
@@ -231,22 +239,17 @@ def game_model3():
     num_1 = ' CPU(GGS_先手モデル)'
     move_action = "/model3"
 
-    if current_board == [
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 2, 1, 0, 0, 0],
-        [0, 0, 0, 1, 2, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0]]:
+    if request.method == 'GET':
         make_cpu_move_black(current_board,model_3)
 
 
     if request.method == 'POST':
         current_board = np.array(current_board)
-        row = int(request.form['row'])
-        col = int(request.form['col'])
+        if(request.form['row']=='' or request.form['col'] == ''):
+            return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2)
+        else:
+            row = int(request.form['row'])
+            col = int(request.form['col'])
 
         if current_player == 2:
             # ゲームのルールに従って石を置く処理（人間が手を打つ場合）
@@ -275,22 +278,17 @@ def game_model4():
     num_1 = ' CPU(France_先手モデル)'
     move_action = "/model4"
 
-    if current_board == [
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 2, 1, 0, 0, 0],
-        [0, 0, 0, 1, 2, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0]]:
+    if request.method == 'GET':
         make_cpu_move_black(current_board,model_4)
 
 
     if request.method == 'POST':
         current_board = np.array(current_board)
-        row = int(request.form['row'])
-        col = int(request.form['col'])
+        if(request.form['row']=='' or request.form['col'] == ''):
+            return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2)
+        else:
+            row = int(request.form['row'])
+            col = int(request.form['col'])
 
         if current_player == 2:
             # ゲームのルールに従って石を置く処理（人間が手を打つ場合）
