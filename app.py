@@ -136,7 +136,9 @@ def index():#指定したパスにアクセスした際に実行される関数
     return render_template('model_select.html')
 
 
-
+@app.route('/move')#デコレーター
+def move():#指定したパスにアクセスした際に実行される関数
+    return render_template('model_select.html')
 
 #モデルの読み込み
 model_1 = Classifier(MLP())
