@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Model Selection</title>
+    <script>
+        // フォームが送信されたときに実行される関数
+        function redirectToSelectedModel() {
+            // フォーム内の選択されたモデルの値を取得
+            let selectedModel = document.getElementById("model").value;
+
+            // 選択されたモデルに基づいてリダイレクトするURLを構築
+            let redirectURL = "/" + selectedModel;
+
+            // リダイレクト
+            window.location.href = redirectURL;
+        }
+    </script>
+</head>
+<body>
+    <form onsubmit="redirectToSelectedModel(); return false;">
+        <label for="model">Choose a model:</label>
+        <select id="model" name="model">
+            <option value="model1">GGS(後手)</option>
+            <option value="model2">France(後手)</option>
+            <option value="model3">GGS(先手)</option>
+            <option value="model4">France(先手)</option>
+            <!-- Add other model options -->
+        </select>
+        <input type="submit" value="Start Game">
+    </form>
+</body>
+</html>
