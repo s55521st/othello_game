@@ -2,57 +2,42 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Othello Game</title>
     <style>
-        body {
-            font-size: 16px;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        h1 {
-            text-align: center;
-        }
-
         table {
             border-collapse: collapse;
-            margin: 2%;
-            width: 96%;
-            max-width: 600px;
+            margin: 20px;
         }
-
-        th, td {
+        table, th, td {
             border: 1px solid black;
-            width: 12.5%;
-            height: 0;
-            padding-bottom: 12.5%;
+        }
+        th, td {
             text-align: center;
-            font-size: 2vw;
+            font-size: 24px;
         }
 
+        /* ⚫️と⚪️のサイズを大きくするスタイル */
         .black-stone, .white-stone {
-            font-size: 3vw;
-        }
-
-        p {
-            text-align: center;
-        }
-
-        form {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        input {
-            font-size: 1.5em;
+            font-size: 36px; /* 適切なサイズに調整してください */
         }
     </style>
+    <script>
+        function adjustCellSize() {
+            var cellSize = Math.min(window.innerWidth, window.innerHeight) / 10; // 画面サイズに基づいてセルサイズを調整
+            var cells = document.querySelectorAll('th, td, .black-stone, .white-stone');
+            cells.forEach(function(cell) {
+                cell.style.width = cellSize + 'px';
+                cell.style.height = cellSize + 'px';
+            });
+        }
+
+        window.addEventListener('resize', adjustCellSize); // ウィンドウサイズが変更されたときに呼び出す
+        document.addEventListener('DOMContentLoaded', adjustCellSize); // ページが読み込まれたときに初回呼び出し
+    </script>
 </head>
 <body>
     <h1>Othello Game</h1>
-    <p>1: {{ num_1 }} 　 2: {{ num_2 }}</p>
+    <p>1 :{{ num_1 }} 　 2 :{{ num_2 }}</p>
     
     <table>
         {% for row in board %}
