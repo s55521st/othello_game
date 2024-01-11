@@ -23,7 +23,7 @@
     </style>
     <script>
         function adjustCellSize() {
-            var cellSize = Math.min(window.innerWidth, window.innerHeight) / 10; // 画面サイズに基づいてセルサイズを調整
+            var cellSize = Math.min(window.innerWidth, window.innerHeight) / 13; // 画面サイズに基づいてセルサイズを調整
             var cells = document.querySelectorAll('th, td, .black-stone, .white-stone');
             cells.forEach(function(cell) {
                 cell.style.width = cellSize + 'px';
