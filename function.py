@@ -41,3 +41,10 @@ def make_move(board, row, col, player):
                         tr += dr
                         tc += dc
                     break
+
+def pass_function(board, player):
+    for row in range(8):
+        for col in range(8):
+            if is_valid_move(board, row, col, player):
+                return True
+    return False
