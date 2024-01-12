@@ -38,22 +38,30 @@
 <body>
     <h1>Othello Game</h1>
     <p>1 :{{ num_1 }} 　 2 :{{ num_2 }}</p>
+
     
     <table>
+        <tr>
+            <th></th> <!-- Empty cell for the corner -->
+            {% for col_num in range(8) %}
+                <th>{{ col_num }}</th>
+            {% endfor %}
+        </tr>
         {% for row in board %}
-            <tr>
-                {% for cell in row %}
-                    <td>
-                        {% if cell == 1 %}
-                            <span class="black-stone">⚫️</span>
-                        {% elif cell == 2 %}
-                            <span class="white-stone">⚪️</span>
-                        {% else %}
-                            
-                        {% endif %}
-                    </td>
-                {% endfor %}
-            </tr>
+        <tr>
+            <th>{{ loop.index0 }}</th>
+            {% for cell in row %}
+                <td>
+                    {% if cell == 1 %}
+                        <span class="black-stone">⚫️</span>
+                    {% elif cell == 2 %}
+                        <span class="white-stone">⚪️</span>
+                    {% else %}
+                        
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
         {% endfor %}
     </table>
     <p>Current Player: {{ current_player }}</p>
