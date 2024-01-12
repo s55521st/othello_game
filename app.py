@@ -66,6 +66,11 @@ class Classifier(Chain):#ネットワークのトレーニングおよび評価
 def make_cpu_move(board,model):
     # モデルに入力するデータを準備
     global retry_num, current_player
+
+    if not function.pass_function(current_board,2):#modelの打ち手がなかった場合
+        current_player = 1 if current_player == 2 else 2
+        return
+        
     input_data = np.array([board], dtype=np.float32)  # 入力データを適切な形に整形
     # Chainerを使って予測を行う
     with chainer.using_config('train', False):
@@ -73,7 +78,7 @@ def make_cpu_move(board,model):
         print(prediction)
     
     # 予測結果から、CPUの手を決定
-    y1 = F.softmax(model_1.predictor(input_data))  
+    y1 = F.softmax(model.predictor(input_data))  
     sorted_arg = np.argsort(y1.data)[0][::-1]
     n = sorted_arg[retry_num]
         
@@ -84,15 +89,24 @@ def make_cpu_move(board,model):
         function.make_move(board, int(n / 8), int(n % 8), 2)
         retry_num = 0
         current_player = 1 if current_player == 2 else 2
+        if not function.pass_function(board,1):#相手が置く場所がなかった場合
+                make_cpu_move(board,model)
     else:
         retry_num += 1
         print('retry_num{}'.format(retry_num))
-        make_cpu_move(board)
+        make_cpu_move(board,model)
+    
+
 
 
 def make_cpu_move_black(board,model):
     # モデルに入力するデータを準備
     global retry_num, current_player
+
+    if not function.pass_function(current_board,1):#modelの打ち手がなかった場合
+        current_player = 2 if current_player == 1 else 1
+        return
+
     input_data = np.array([board], dtype=np.float32)  # 入力データを適切な形に整形
     # Chainerを使って予測を行う
     with chainer.using_config('train', False):
@@ -100,7 +114,7 @@ def make_cpu_move_black(board,model):
         print(prediction)
     
     # 予測結果から、CPUの手を決定
-    y1 = F.softmax(model_1.predictor(input_data))  
+    y1 = F.softmax(model.predictor(input_data))  
     sorted_arg = np.argsort(y1.data)[0][::-1]
     n = sorted_arg[retry_num]
         
@@ -111,6 +125,8 @@ def make_cpu_move_black(board,model):
         function.make_move(board, int(n / 8), int(n % 8), 1)
         retry_num = 0
         current_player = 2 if current_player == 1 else 1
+        if not function.pass_function(current_board,2):#相手が置く場所がなかった場合
+                make_cpu_move_black(current_board,model)
     else:
         retry_num += 1
         print('retry_num{}'.format(retry_num))
@@ -124,14 +140,14 @@ def index():#指定したパスにアクセスした際に実行される関数
     retry_num = 0
     current_player = 1
     current_board = [
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 2, 1, 0, 0, 0],
-        [0, 0, 0, 1, 2, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0]
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 1, 0, 0, 0],
+    [0, 0, 0, 1, 2, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0]
     ]
     return render_template('model_select.html')
 
@@ -168,6 +184,9 @@ def game_model1():
 
     if request.method == 'POST':
         current_board = np.array(current_board)
+
+        
+        #formからの入力を処理
         if(request.form['row']=='' or request.form['col'] == ''):
             return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2)
         else:
@@ -191,13 +210,34 @@ def game_model1():
         if current_player == 2:
             make_cpu_move(current_board,model_1)
 
+
+        #ゲーム終了判定
+        if not function.pass_function(current_board, 1) and not function.pass_function(current_board, 2):
+            # ゲーム終了時のスコアを計算
+            num_black = sum(row.tolist().count(1) for row in current_board)
+            num_white = sum(row.tolist().count(2) for row in current_board)
+            if num_white > num_black:
+                result = 'white win!'
+                print(result)
+                return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2,result=result,num_black=num_black,num_white=num_white)
+            elif num_black > num_white:
+                result = 'black win!'
+                print(result)
+                return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2,result=result,num_black=num_black,num_white=num_white)
+            else:
+                result = 'draw'
+                print(result)
+                return ender_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2,result=result,num_black=num_black,num_white=num_white)
+            
+
     return render_template('othello.html', board=current_board, current_player=current_player,move_action=move_action,num_1=num_1,num_2=num_2)
 
 
+# ゲームの進行
 @app.route('/model2', methods=['GET', 'POST'])
 def game_model2():
-    
-    global current_player, current_board,mod , model_2  # グローバル変数として現在のプレイヤーと盤面を使用
+
+    global current_player, current_board ,model_2  # グローバル変数として現在のプレイヤーと盤面を使用
 
     num_1 = ' YOU'
     num_2 = ' CPU(France_後手モデル)'
@@ -205,11 +245,15 @@ def game_model2():
 
     if request.method == 'POST':
         current_board = np.array(current_board)
+
+        #formからの入力を処理
         if(request.form['row']=='' or request.form['col'] == ''):
             return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2)
         else:
             row = int(request.form['row'])
             col = int(request.form['col'])
+
+        
 
         if current_player == 1:
             # ゲームのルールに従って石を置く処理（人間が手を打つ場合）
@@ -226,8 +270,27 @@ def game_model2():
         if current_player == 2:
             make_cpu_move(current_board,model_2)
 
-    return render_template('othello.html', board=current_board, current_player=current_player,move_action=move_action, num_1=num_1,num_2=num_2)
 
+        #ゲーム終了判定
+        if not function.pass_function(current_board, 1) and not function.pass_function(current_board, 2):
+            # ゲーム終了時のスコアを計算
+            num_black = sum(row.tolist().count(1) for row in current_board)
+            num_white = sum(row.tolist().count(2) for row in current_board)
+            if num_white > num_black:
+                result = 'white win!'
+                print(result)
+                return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2,result=result,num_black=num_black,num_white=num_white)
+            elif num_black > num_white:
+                result = 'black win!'
+                print(result)
+                return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2,result=result,num_black=num_black,num_white=num_white)
+            else:
+                result = 'draw'
+                print(result)
+                return ender_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2,result=result,num_black=num_black,num_white=num_white)
+            
+
+    return render_template('othello.html', board=current_board, current_player=current_player,move_action=move_action,num_1=num_1,num_2=num_2)
 
 
 @app.route('/model3', methods=['GET', 'POST'])
@@ -265,6 +328,24 @@ def game_model3():
         # CPUの手を決定して石を置く処理（プレイヤーが'2'の場合）
         if current_player == 1:
             make_cpu_move_black(current_board,model_3)
+
+        #ゲーム終了判定
+        if not function.pass_function(current_board, 1) and not function.pass_function(current_board, 2):
+            # ゲーム終了時のスコアを計算
+            num_black = sum(row.tolist().count(1) for row in current_board)
+            num_white = sum(row.tolist().count(2) for row in current_board)
+            if num_white > num_black:
+                result = 'white win!'
+                print(result)
+                return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2,result=result,num_black=num_black,num_white=num_white)
+            elif num_black > num_white:
+                result = 'black win!'
+                print(result)
+                return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2,result=result,num_black=num_black,num_white=num_white)
+            else:
+                result = 'draw'
+                print(result)
+                return ender_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2,result=result,num_black=num_black,num_white=num_white)
 
     return render_template('othello.html', board=current_board, current_player=current_player,move_action=move_action ,num_1=num_1,num_2=num_2)
 
@@ -304,6 +385,24 @@ def game_model4():
         # CPUの手を決定して石を置く処理（プレイヤーが'2'の場合）
         if current_player == 1:
             make_cpu_move_black(current_board,model_4)
+
+        #ゲーム終了判定
+        if not function.pass_function(current_board, 1) and not function.pass_function(current_board, 2):
+            # ゲーム終了時のスコアを計算
+            num_black = sum(row.tolist().count(1) for row in current_board)
+            num_white = sum(row.tolist().count(2) for row in current_board)
+            if num_white > num_black:
+                result = 'white win!'
+                print(result)
+                return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2,result=result,num_black=num_black,num_white=num_white)
+            elif num_black > num_white:
+                result = 'black win!'
+                print(result)
+                return render_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2,result=result,num_black=num_black,num_white=num_white)
+            else:
+                result = 'draw'
+                print(result)
+                return ender_template('othello.html', board=current_board, current_player=current_player,num_1=num_1,num_2=num_2,result=result,num_black=num_black,num_white=num_white)
 
     return render_template('othello.html', board=current_board, current_player=current_player,move_action=move_action,num_1=num_1,num_2=num_2)
 
