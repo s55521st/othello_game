@@ -18,7 +18,7 @@
 
         /* ⚫️と⚪️のサイズを大きくするスタイル */
         .black-stone, .white-stone {
-            font-size: 36px; /* 適切なサイズに調整してください */
+            font-size: 36px; 
         }
     </style>
     <script>
@@ -77,6 +77,13 @@
         <input type="number" name="col" min="0" max="7"><br>
         <input type="submit" value="put">
     </form>
+
+    {% if result %}
+        <p>{{ result }}</p>
+        <p>black: {{ num_black }}</p>
+        <p>white: {{ num_white }}</p>
+    {% endif %}
+
     <form action="/" method="get" style="margin-top: 20px;">
         <input type="submit" value="ホームに戻る">
     </form>
