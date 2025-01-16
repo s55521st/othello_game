@@ -1,4 +1,4 @@
-WebAppURL：https://othelloai-game.onrender.com
+作成したAIと対戦できるサイト：https://othelloai-game.onrender.com
 
 卒業論文：[20_常見壮汰_卒業研究論文.pdf](https://github.com/user-attachments/files/18432944/20_._.pdf)
 
