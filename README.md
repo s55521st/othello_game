@@ -1,4 +1,5 @@
 使用言語：Python
+
 使用したホスティングサービス：Render
 
 作成したAIと対戦できるサイト：https://othelloai-game.onrender.com
